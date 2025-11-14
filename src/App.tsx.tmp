@@ -1,0 +1,67 @@
+import { useState, useEffect } from "react";
+import { Navigation } from "./components/navigation";
+import { LandingPage } from "./components/landing-page";
+import { VirtualTourPage } from "./components/virtual-tour-page";
+import { MapPage } from "./components/map-page";
+import { DigitalArchivePage } from "./components/digital-archive-page";
+import { AudioGuidePage } from "./components/audio-guide-page";
+import { CulturalCalendarPage } from "./components/cultural-calendar-page";
+import { CommunityPage } from "./components/community-page";
+import { FutureFeaturesPage } from "./components/future-features-page";
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom";
+
+function Layout() {
+  const [isDark, setIsDark] = useState(false);
+  const [apiStatus, setApiStatus] = useState<string | null>(null);
+  const currentPage = window.location.pathname.slice(1) || 'home';
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDark]);
+
+  useEffect(() => {
+    fetch('/api/monasteries')
+      .then((r) => r.json())
+      .then(() => setApiStatus('ok'))
+      .catch(() => setApiStatus('error'));
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation
+        currentPage={currentPage}
+        isDark={isDark}
+        onThemeToggle={() => setIsDark(!isDark)}
+      />
+      <main className="container mx-auto px-4 pt-20 pb-12">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      { path: "", element: <LandingPage /> },
+      { path: "virtual-tour", element: <VirtualTourPage /> },
+      { path: "map", element: <MapPage key="map-page" /> },
+      { path: "archive", element: <DigitalArchivePage /> },
+      { path: "audio-guide", element: <AudioGuidePage /> },
+      { path: "calendar", element: <CulturalCalendarPage /> },
+      { path: "community", element: <CommunityPage /> },
+      { path: "future", element: <FutureFeaturesPage /> },
+      { path: "*", element: <Navigate to="/" replace /> }
+    ]
+  }
+]);
+
+export default function App() {
+  return <RouterProvider router={router} />;
+}
