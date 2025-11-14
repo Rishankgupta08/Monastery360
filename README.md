@@ -170,9 +170,4 @@ Dev CORS allows `http://localhost:3000`.
 ## License
 This project is provided as-is for demonstration and educational purposes. If you intend to use or redistribute, please add an appropriate license file and update this section.
   
-=======
-# Monastery360
->>>>>>> 698e8954020d704ac586b144cb5a13544048597d
-=======
 
->>>>>>> 20d40ce10494b1994937642f84ee90115913a815
