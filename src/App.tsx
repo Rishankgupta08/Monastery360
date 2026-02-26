@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { 
-  RouterProvider, 
-  createBrowserRouter, 
-  Navigate, 
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
   Outlet,
   useLocation
 } from 'react-router-dom';
@@ -22,7 +22,6 @@ import { AuthProvider } from './contexts/auth-context';
 import { ChatbotProvider } from './contexts/chatbot-context';
 import { FloatingChatIcon } from './components/FloatingChatIcon';
 import { AIChatbot } from './components/AIChatbot';
-import { EnvCheck } from './components/EnvCheck';
 
 // Firebase connection test (only in development)
 if (import.meta.env.DEV) {
@@ -31,7 +30,6 @@ if (import.meta.env.DEV) {
 
 function Layout() {
   const [isDark, setIsDark] = useState(false);
-  const [apiStatus, setApiStatus] = useState<string | null>(null);
   const location = useLocation();
   const currentPage = location.pathname.slice(1) || 'home';
 
@@ -43,26 +41,6 @@ function Layout() {
     }
   }, [isDark]);
 
-  useEffect(() => {
-    const checkApiConnection = async () => {
-      try {
-        const response = await fetch('/api/monasteries', { 
-          signal: AbortSignal.timeout(5000) // Timeout after 5 seconds
-        });
-        if (!response.ok) throw new Error(`API responded with status: ${response.status}`);
-        await response.json();
-        setApiStatus('ok');
-      } catch (error) {
-        console.error('API connection error:', error);
-        setApiStatus('error');
-        // Retry after 30 seconds
-        setTimeout(checkApiConnection, 30000);
-      }
-    };
-    
-    checkApiConnection();
-  }, []);
-
   const isLandingPage = location.pathname === '/';
 
   return (
@@ -73,27 +51,13 @@ function Layout() {
         onThemeToggle={() => setIsDark(!isDark)}
       />
       <main className={`flex-1 ${isLandingPage ? "pt-16" : "container mx-auto px-4 pt-20 pb-12"}`}>
-        {apiStatus === 'error' && (
-          <div className="mb-4 p-3 rounded border border-red-300 text-red-700 bg-red-50">
-            We're having trouble connecting to our servers. Please check your internet connection or try again later.
-            <button 
-              onClick={() => window.location.reload()} 
-              className="ml-2 underline hover:text-red-800"
-            >
-              Retry
-            </button>
-          </div>
-        )}
         <Outlet />
       </main>
       <Footer />
-      
+
       {/* AI Chatbot - Persistent across all pages */}
       <FloatingChatIcon />
       <AIChatbot />
-      
-      {/* Debug Environment Variables */}
-      {import.meta.env.DEV && <EnvCheck />}
     </div>
   );
 }
