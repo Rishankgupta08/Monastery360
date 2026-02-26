@@ -169,5 +169,9 @@ Dev CORS allows `http://localhost:3000`.
 
 ## License
 This project is provided as-is for demonstration and educational purposes. If you intend to use or redistribute, please add an appropriate license file and update this section.
+<<<<<<< HEAD
   
 
+=======
+  
+>>>>>>> 822c1a8 (Descriptive commit message)
